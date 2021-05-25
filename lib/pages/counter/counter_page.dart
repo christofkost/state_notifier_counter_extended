@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:state_notifier_counter/pages/counter/counter_notifier.dart';
+import 'package:state_notifier_counter/pages/counter/counter_state.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -16,6 +17,9 @@ class MyHomePage extends StatelessWidget {
       body: Consumer(
           builder: (BuildContext context, ScopedReader watch, Widget child) {
         final counterState = watch(counterStateNotifierProvider);
+        if (counterState.errorFeedback.isNotEmpty) {
+          _showErrorDialog(context, counterState);
+        }
         return Stack(
           children: [
             if (counterState.isLoading)
@@ -56,7 +60,7 @@ class MyHomePage extends StatelessWidget {
                           ? null
                           : () => context
                               .read(counterStateNotifierProvider.notifier)
-                              .decrementCounter(),
+                              .changeCounter(true),
                       tooltip: 'Decrement',
                       child: Icon(Icons.remove),
                     ),
@@ -68,7 +72,7 @@ class MyHomePage extends StatelessWidget {
                           ? null
                           : () => context
                               .read(counterStateNotifierProvider.notifier)
-                              .incrementCounter(),
+                              .changeCounter(false),
                       tooltip: 'Increment',
                       child: Icon(Icons.add),
                     ),
@@ -80,5 +84,31 @@ class MyHomePage extends StatelessWidget {
         );
       }),
     );
+  }
+
+  Future<void> _showErrorDialog(
+      BuildContext context, CounterState counterState) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('An error occurred'),
+            content: SingleChildScrollView(
+              child: Text(counterState.errorFeedback),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    });
   }
 }

@@ -11,26 +11,24 @@ class CounterStateNotifier extends StateNotifier<CounterState> {
 
   CounterStateNotifier(this._apiService)
       : super(CounterState(
-            count: 0, countTextColorAsHex: 0xff000000, isLoading: false));
+            count: 0,
+            countTextColorAsHex: 0xff000000,
+            isLoading: false,
+            errorFeedback: ""));
 
-  Future<void> incrementCounter() async {
-    state = state.copyWith(isLoading: true);
-    final newCount =
-        state.count + await _apiService.getDeOrIncrementFromServer();
-    state = state.copyWith(
-        count: newCount,
-        countTextColorAsHex: _getCorrectColor(newCount),
-        isLoading: false);
-  }
-
-  Future<void> decrementCounter() async {
-    state = state.copyWith(isLoading: true);
-    final newCount =
-        state.count - await _apiService.getDeOrIncrementFromServer();
-    state = state.copyWith(
-        count: newCount,
-        countTextColorAsHex: _getCorrectColor(newCount),
-        isLoading: false);
+  Future<void> changeCounter(bool isDecrement) async {
+    try {
+      state = state.copyWith(isLoading: true, errorFeedback: "");
+      final newCount = state.count +
+          await _apiService.getDeOrIncrementFromServer() *
+              (isDecrement ? -1 : 1);
+      state = state.copyWith(
+          count: newCount,
+          countTextColorAsHex: _getCorrectColor(newCount),
+          isLoading: false);
+    } on Exception catch (e) {
+      state = state.copyWith(errorFeedback: e.toString(), isLoading: false);
+    }
   }
 
   int _getCorrectColor(int counter) {
