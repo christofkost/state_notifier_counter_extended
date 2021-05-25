@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 class CounterState {
   final int count;
   final int countTextColorAsHex;
@@ -22,5 +24,26 @@ class CounterState {
       isLoading: isLoading ?? this.isLoading,
       errorFeedback: errorFeedback ?? this.errorFeedback,
     );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is CounterState &&
+        other.count == count &&
+        other.countTextColorAsHex == countTextColorAsHex &&
+        other.isLoading == isLoading &&
+        other.errorFeedback == errorFeedback;
+  }
+
+  @override
+  int get hashCode {
+    return hashList([
+      count,
+      countTextColorAsHex,
+      isLoading,
+      errorFeedback,
+    ]);
   }
 }

@@ -86,8 +86,7 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  Future<void> _showErrorDialog(
-      BuildContext context, CounterState counterState) {
+  void _showErrorDialog(BuildContext context, CounterState counterState) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       return showDialog<void>(
         context: context,
