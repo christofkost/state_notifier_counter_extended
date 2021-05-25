@@ -6,7 +6,7 @@ class CounterState {
 
   CounterState copyWith({
     int count,
-    String countTextColorAsHex,
+    int countTextColorAsHex,
   }) {
     return CounterState(
       count: count ?? this.count,

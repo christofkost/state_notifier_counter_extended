@@ -10,10 +10,24 @@ class CounterStateNotifier extends StateNotifier<CounterState> {
       : super(CounterState(count: 0, countTextColorAsHex: 0xff000000));
 
   void incrementCounter() {
-    state = state.copyWith(count: state.count + 1);
+    final newCount = state.count + 1;
+    state = state.copyWith(
+        count: newCount, countTextColorAsHex: _getCorrectColor(newCount));
   }
 
   void decrementCounter() {
-    state = state.copyWith(count: state.count - 1);
+    final newCount = state.count - 1;
+    state = state.copyWith(
+        count: newCount, countTextColorAsHex: _getCorrectColor(newCount));
+  }
+
+  int _getCorrectColor(int counter) {
+    if (counter > 0) {
+      return 0xff00d800; // return green color
+    }
+    if (counter < 0) {
+      return 0xffff0000; // return red color
+    }
+    return 0xff000000; // return black color
   }
 }
