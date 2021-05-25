@@ -13,70 +13,72 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: Stack(
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Consumer(builder:
-                (BuildContext context, ScopedReader watch, Widget child) {
-              final counterState = watch(counterStateNotifierProvider);
-              if (counterState.isLoading) {
-                return LinearProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(counterState.countTextColorAsHex)),
-                    backgroundColor: Color(counterState.countTextColorAsHex)
-                        .withOpacity(0.2));
-              } else {
-                return SizedBox.shrink();
-              }
-            }),
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'You have pushed the button this many times:',
-                ),
-                Consumer(builder:
-                    (BuildContext context, ScopedReader watch, Widget child) {
-                  final counterState = watch(counterStateNotifierProvider);
-                  return Text(
+      body: Consumer(
+          builder: (BuildContext context, ScopedReader watch, Widget child) {
+        final counterState = watch(counterStateNotifierProvider);
+        return Stack(
+          children: [
+            if (counterState.isLoading)
+              Align(
+                  alignment: Alignment.topCenter,
+                  child: LinearProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Color(counterState.countTextColorAsHex)),
+                      backgroundColor: Color(counterState.countTextColorAsHex)
+                          .withOpacity(0.2))),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'You have pushed the button this many times:',
+                  ),
+                  Text(
                     '${counterState.count}',
                     style: Theme.of(context).textTheme.headline4.copyWith(
                         color: Color(counterState.countTextColorAsHex)),
-                  );
-                }),
-              ],
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  FloatingActionButton(
-                    onPressed: () => context
-                        .read(counterStateNotifierProvider.notifier)
-                        .decrementCounter(),
-                    tooltip: 'Decrement',
-                    child: Icon(Icons.remove),
-                  ),
-                  FloatingActionButton(
-                    onPressed: () => context
-                        .read(counterStateNotifierProvider.notifier)
-                        .incrementCounter(),
-                    tooltip: 'Increment',
-                    child: Icon(Icons.add),
-                  ),
+                  )
                 ],
               ),
             ),
-          )
-        ],
-      ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    FloatingActionButton(
+                      backgroundColor: counterState.isLoading
+                          ? Colors.grey
+                          : Theme.of(context).primaryColor,
+                      onPressed: counterState.isLoading
+                          ? null
+                          : () => context
+                              .read(counterStateNotifierProvider.notifier)
+                              .decrementCounter(),
+                      tooltip: 'Decrement',
+                      child: Icon(Icons.remove),
+                    ),
+                    FloatingActionButton(
+                      backgroundColor: counterState.isLoading
+                          ? Colors.grey
+                          : Theme.of(context).primaryColor,
+                      onPressed: counterState.isLoading
+                          ? null
+                          : () => context
+                              .read(counterStateNotifierProvider.notifier)
+                              .incrementCounter(),
+                      tooltip: 'Increment',
+                      child: Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        );
+      }),
     );
   }
 }
