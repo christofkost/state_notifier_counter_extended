@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:state_notifier_counter/counter/counter_page.dart';
+import 'package:state_notifier_counter/pages/counter/counter_page.dart';
 
 void main() {
   runApp(MyApp());

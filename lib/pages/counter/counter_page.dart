@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:state_notifier_counter/counter/counter_notifier.dart';
+import 'package:state_notifier_counter/pages/counter/counter_notifier.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -15,6 +15,22 @@ class MyHomePage extends StatelessWidget {
       ),
       body: Stack(
         children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: Consumer(builder:
+                (BuildContext context, ScopedReader watch, Widget child) {
+              final counterState = watch(counterStateNotifierProvider);
+              if (counterState.isLoading) {
+                return LinearProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Color(counterState.countTextColorAsHex)),
+                    backgroundColor: Color(counterState.countTextColorAsHex)
+                        .withOpacity(0.2));
+              } else {
+                return SizedBox.shrink();
+              }
+            }),
+          ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
